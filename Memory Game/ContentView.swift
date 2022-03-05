@@ -8,20 +8,59 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    var emojis: Array = ["✈️", "🚁", "🚂", "🚗", "🚲", "🚜",  "🚕", "🏎", "🚑", "🚓", "🚒", "🚀", "🏍", "🚌", "🚐", "🚛", "🛳", "⛴", "🚎", "⛵️", "🚤", "🛴", "🛺", "🛻"]
+    
+    @State var emojiCount: Int = 24
+    
     var body: some View {
-        HStack {
-            CardView()
-            CardView()
-            CardView()
-            CardView()
+        VStack {
+            HStack {
+                ScrollView {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
+                        ForEach(emojis[0..<emojiCount], id: \.self, content: { emoji in
+                            CardView(content: emoji)
+                                .aspectRatio(2/3, contentMode: .fit)
+                        })
+                    }
+                }
+                .padding(.horizontal)
+                .foregroundColor(.red)
+            }
+            HStack {
+                removeCardButton
+                Spacer()
+                addCardButton
+            }
+            .font(.largeTitle)
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
-        .foregroundColor(.red)
-        
+    }
+    
+    var removeCardButton: some View {
+        Button {
+            if emojiCount > 1 {
+                emojiCount -= 1
+            }
+        } label: {
+            Image(systemName: "minus.circle")
+        }
+        .padding()
+    }
+    
+    var addCardButton: some View {
+        Button {
+            if emojiCount < emojis.count {
+                emojiCount += 1
+            }
+        } label: {
+            Image(systemName: "plus.circle")
+                .padding()
+        }
     }
     
     struct CardView: View {
-        
+        var content: String
         @State var isFaceUp: Bool = false
         let card = RoundedRectangle(cornerRadius: 20)
         
@@ -34,7 +73,7 @@ struct ContentView: View {
                         .foregroundColor(.white)
                     card
                         .stroke()
-                    Text("✈️")
+                    Text(content)
                         .font(.largeTitle)
                 } else {
                     card
@@ -52,6 +91,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-.previewInterfaceOrientation(.portraitUpsideDown)
+            .previewInterfaceOrientation(.portrait)
     }
 }
